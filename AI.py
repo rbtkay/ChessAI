@@ -36,7 +36,7 @@ def ai_move(board, is_smart: bool = False):
 
     if is_smart:
         # move = smart_move(board=board)
-        move, value = minmax(depth=3, board=board, is_max=False)
+        move, value = minmax(depth=6, alpha=-999999, beta=999999, board=board, is_max=False)
     else:
         possible_moves = get_possible_moves(board, "black")
         move = random_move(possible_moves=possible_moves)
@@ -78,7 +78,7 @@ def smart_move(board):
     return best_move
 
 
-def minmax(depth, board, is_max):
+def minmax(depth, alpha, beta, board, is_max):
     if depth <= 0:
         return (None, evaluate(board)) # int
 
@@ -86,15 +86,22 @@ def minmax(depth, board, is_max):
         print("max")
         possible_moves = get_possible_moves(board, "white")
         best_value = -9999
+        best_move = None
 
         for move in possible_moves:
             for i in move["moves"]:
                 new_board = board.copy()
                 v_board = move_on_virtual_board(board=new_board, origin=move["index"], destination=i)
-                current_move, value = minmax(depth=(depth -1), board=v_board.copy(), is_max=(not is_max))
-                if(value > best_value):
+                current_move, value = minmax(depth=(depth -1), alpha=alpha, beta=beta, board=v_board.copy(), is_max=(not is_max))
+
+                if value > best_value:
                     best_value = value
                     best_move = Move(move["index"], i)
+                
+                alpha = best_value if best_value > alpha else alpha
+
+                if(beta <= alpha):
+                    return (best_move, best_value)
 
         return (best_move, best_value)
 
@@ -103,16 +110,22 @@ def minmax(depth, board, is_max):
         possible_moves = get_possible_moves(board, "black")
 
         best_value = 9999
+        best_move = None
 
         for move in possible_moves:
             for i in move["moves"]:
                 new_board = board.copy()
                 v_board = move_on_virtual_board(board=new_board, origin=move["index"], destination=i)
-                current_move, value = minmax(depth=(depth -1), board=v_board.copy(), is_max=(not is_max))
+                current_move, value = minmax(depth=(depth -1), alpha=alpha, beta=beta, board=v_board.copy(), is_max=(not is_max))
 
-                if(value < best_value):
+                if value < best_value:
                     best_value = value
                     best_move = Move(move["index"], i)
+
+                beta = best_value if best_value < beta else beta
+
+                if(beta <= alpha):
+                    return (best_move, best_value)
                     
         return (best_move, best_value)
         
