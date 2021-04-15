@@ -1,63 +1,269 @@
-from Piece import Piece
-
-def init_game():
-    board = [None]*64
-    board[0] = Piece("Rook", "black", 0)
-    board[7] = Piece("Rook", "black", 7)
-
-    board[1] = Piece("Knight", "black", 1)
-    board[6] = Piece("Knight", "black", 6)
-    
-    board[2] = Piece("Bishop", "black", 2)
-    board[5] = Piece("Bishop", "black", 5)
-
-    board[3] = Piece("Queen", "black", 3)
-    board[4] = Piece("King", "black", 4)
-
-    for i in range(8,16):
-        board[i] = Piece("Pawn", "black", i)
-
-    ### white pieces
-    board[56] = Piece("Rook", "white", 56)
-    board[63] = Piece("Rook", "white", 63)
-
-    board[57] = Piece("Knight", "white", 57)
-    board[62] = Piece("Knight", "white", 62)
-    
-    board[58] = Piece("Bishop", "white", 58)
-    board[61] = Piece("Bishop", "white", 61)
-
-    board[59] = Piece("Queen", "white", 59)
-    board[60] = Piece("King", "white", 60)
-
-    for i in range(48,56):
-        board[i] = Piece("Pawn", "white", i)
-
-    return board
-
 
 def is_check(playing_color: str, board):
-    print("in the check function")
-    display_virtual_board(board)
+
+    # display_virtual_board(board=board)
+
+    # find black king 
+    for i in board:
+        if i is not None and i.color == playing_color and i.piece_type == "King":
+            king = board.index(i)
+
+    king_y = int(king / 8)
+    king_x = int(king - (king_y * 8))
+
+    # print("x --- ", king_x)
+    # print("y --- ", king_y)
+
+    # check if king is in danger
+
+    # check for knight
+    danger_zones = [
+                [king_x+2, king_y+1],
+                [king_x+2, king_y-1],
+                [king_x-2, king_y+1],
+                [king_x-2, king_y-1],
+                [king_x+1, king_y+2],
+                [king_x+1, king_y-2],
+                [king_x-1, king_y+2],
+                [king_x-1, king_y-2],
+    ]
+
+    for i in danger_zones:
+        current_index = i[1] * 8 + i[0]
+        if 0 < current_index < 64: 
+            if board[current_index] is not None:
+                if board[current_index].color != playing_color and board[current_index].piece_type == "Knight":
+                    return True
+                break
+
+    # check for Bishop
+    x_1 = king_x+1 
+    y_1 = king_y+1
+    new_index = y_1 * 8 + x_1
+    while 0 <= x_1 < 8 and 0 <= y_1 < 8:
+        if board[new_index] is not None:
+            if board[new_index].color != playing_color and board[new_index].piece_type == "Bishop":
+                return True
+            break
+                    
+        x_1 += 1
+        y_1 += 1
+        new_index = y_1 * 8 + x_1
+
+    x_2 = king_x-1 
+    y_2 = king_y-1
+    new_index = y_2 * 8 + x_2
+    while 0 <= x_2 < 8 and 0 <= y_2 < 8:
+        if board[new_index] is not None:
+            if board[new_index].color != playing_color and board[new_index].piece_type == "Bishop":
+                return True
+            break    
+        x_2 -= 1
+        y_2 -= 1
+        new_index = y_2 * 8 + x_2
+
+
+    x_3 = king_x+1 
+    y_3 = king_y-1
+    new_index = y_3 * 8 + x_3
+    while 0 <= x_3 < 8 and 0 <= y_3 < 8:
+        if board[new_index] is not None:
+            if board[new_index].color != playing_color and board[new_index].piece_type == "Bishop":
+                return True
+            break
+        x_3 += 1
+        y_3 -= 1  
+        new_index = y_3 * 8 + x_3
+
+
+    x_4 = king_x-1 
+    y_4 = king_y+1
+    new_index = y_4 * 8 + x_4
+    while 0 <= x_4 < 8 and 0 <= y_4 < 8:
+        if board[new_index] is not None:
+            if board[new_index].color != playing_color and board[new_index].piece_type == "Bishop":
+                return True
+            break
+        x_4 -= 1
+        y_4 += 1
+        new_index = y_4 * 8 + x_4
+
     
-    print("playing color -- ", playing_color)
-    king_index = get_king_index(playing_color, board)
-    
-    opponent_moves = get_opponent_moves(playing_color=playing_color, board=board)
-    print("opponent_moves")
-    print(opponent_moves)
+    # check for rook
+    x_1 = king_x 
+    y_1 = king_y+1
+    new_index = y_1 * 8 + x_1
+    while 0 <= x_1 < 8 and 0 <= y_1 < 8:
+        if board[new_index] is not None:
+            if board[new_index].color != playing_color and board[new_index].piece_type == "Rook":
+                return True
+            break
+        y_1 += 1
+        new_index = y_1 * 8 + x_1
+
+    x_2 = king_x 
+    y_2 = king_y-1
+    new_index = y_2 * 8 + x_2
+    while 0 <= x_2 < 8 and 0 <= y_2 < 8:
+        if board[new_index] is not None:
+            if board[new_index].color != playing_color and board[new_index].piece_type == "Rook":
+                return True
+            break
+        y_2 -= 1
+        new_index = y_2 * 8 + x_2
+
+    x_3 = king_x+1 
+    y_3 = king_y
+    new_index = y_3 * 8 + x_3
+    while 0 <= x_3 < 8 and 0 <= y_3 < 8:
+        if board[new_index] is not None:
+            if board[new_index].color != playing_color and board[new_index].piece_type == "Rook":
+                return True
+            break
+        x_3 += 1
+        new_index = y_3 * 8 + x_3
 
 
+    x_4 = king_x-1 
+    y_4 = king_y
+    new_index = y_4 * 8 + x_4
+    while 0 <= x_4 < 8 and 0 <= y_4 < 8:
+        if board[new_index] is not None:
+            if board[new_index].color != playing_color and board[new_index].piece_type == "Rook":
+                return True
+            break
+        x_4 -= 1
+        new_index = y_4 * 8 + x_4
 
-    print("in the check function")
-    display_virtual_board(board)
 
+    # check for queen
+    x_1 = king_x 
+    y_1 = king_y+1
+    new_index = y_1 * 8 + x_1
+    while 0 <= x_1 < 8 and 0 <= y_1 < 8:
+        if board[new_index] is not None:
+            if board[new_index].color != playing_color and board[new_index].piece_type == "Queen":
+                return True
+            break
+        y_1 += 1
+        new_index = y_1 * 8 + x_1
 
-    print(king_index)
+    x_2 = king_x 
+    y_2 = king_y-1
+    new_index = y_2 * 8 + x_2
+    while 0 <= x_2 < 8 and 0 <= y_2 < 8:
+        if board[new_index] is not None:
+            if board[new_index].color != playing_color and board[new_index].piece_type == "Queen":
+                return True
+            break
+        y_2 -= 1
+        new_index = y_2 * 8 + x_2
 
-    if king_index in opponent_moves:
-        print("check")
+    x_3 = king_x+1 
+    y_3 = king_y
+    new_index = y_3 * 8 + x_3
+    while 0 <= x_3 < 8 and 0 <= y_3 < 8:
+        if board[new_index] is not None:
+            if board[new_index].color != playing_color and board[new_index].piece_type == "Queen":
+                return True
+            break
+        x_3 += 1
+        new_index = y_3 * 8 + x_3
+
+    x_4 = king_x-1 
+    y_4 = king_y
+    new_index = y_4 * 8 + x_4
+    while 0 <= x_4 < 8 and 0 <= y_4 < 8:
+        if board[new_index] is not None:
+            if board[new_index].color != playing_color and board[new_index].piece_type == "Queen":
+                return True
+            break
+        x_4 -= 1
+        new_index = y_4 * 8 + x_4
+
+    x_5 = king_x+1 
+    y_5 = king_y+1
+    new_index = y_5 * 8 + x_5
+    while 0 <= x_5 < 8 and 0 <= y_5 < 8:
+        if board[new_index] is not None:
+            if board[new_index].color != playing_color and board[new_index].piece_type == "Queen":
+                return True
+            break
+        x_5 += 1
+        y_5 += 1 
+        new_index = y_5 * 8 + x_5
+
+    x_6 = king_x-1 
+    y_6 = king_y-1
+    new_index = y_6 * 8 + x_6
+    while 0 <= x_6 < 8 and 0 <= y_6 < 8:
+        if board[new_index] is not None:
+            if board[new_index].color != playing_color and board[new_index].piece_type == "Queen":
+                return True
+            break
+        x_6 -= 1
+        y_6 -= 1     
+        new_index = y_6 * 8 + x_6
+
+    x_7 = king_x+1 
+    y_7 = king_y-1
+    new_index = y_7 * 8 + x_7
+    while 0 <= x_7 < 8 and 0 <= y_7 < 8:
+        if board[new_index] is not None:
+            if board[new_index].color != playing_color and board[new_index].piece_type == "Queen":
+                return True
+            break
+        x_7 += 1
+        y_7 -= 1  
+        new_index = y_7 * 8 + x_7
+
+    x_8 = king_x-1 
+    y_8 = king_y+1
+    new_index = y_8 * 8 + x_8
+    while 0 <= x_8 < 8 and 0 <= y_8 < 8:
+        if board[new_index] is not None:
+            if board[new_index].color != playing_color and board[new_index].piece_type == "Queen":
+                return True
+            break
+        x_8 -= 1
+        y_8 += 1 
+        new_index = y_8 * 8 + x_8
+
+    # check for Pawn
+    new_y = king_y + 1 if playing_color == "black" else king_y - 1
+    x_1 = king_x + 1
+    x_2 = king_x - 1
+
+    new_index = new_y * 8 + x_1
+    if board[new_index] is not None and board[new_index].color != playing_color and board[new_index].piece_type == "Pawn":
         return True
+
+    new_index = new_y * 8 + x_2
+    if board[new_index] is not None and board[new_index].color != playing_color and board[new_index].piece_type == "Pawn":
+        return True
+
+
+    # print("in the check function")
+    # display_virtual_board(board)
+    
+    # print("playing color -- ", playing_color)
+    # king_index = get_king_index(playing_color, board)
+    
+    # opponent_moves = get_opponent_moves(playing_color=playing_color, board=board)
+    # print("opponent_moves")
+    # print(opponent_moves)
+
+
+
+    # print("in the check function")
+    # display_virtual_board(board)
+
+
+    # print(king_index)
+
+    # if king_index in opponent_moves:
+    #     print("check")
+    #     return True
     return False
 
 

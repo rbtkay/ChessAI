@@ -36,7 +36,7 @@ def ai_move(board, is_smart: bool = False):
 
     if is_smart:
         # move = smart_move(board=board)
-        move, value = minmax(depth=6, alpha=-999999, beta=999999, board=board, is_max=False)
+        move, value = minmax(depth=4, alpha=-999999, beta=999999, board=board, is_max=False)
     else:
         possible_moves = get_possible_moves(board, "black")
         move = random_move(possible_moves=possible_moves)

@@ -2,9 +2,46 @@ from tkinter import *
 from Piece import Piece
 from functools import partial
 from AI import evaluate, get_possible_moves, move_on_virtual_board, ai_move
-from game import is_check, display_virtual_board, get_virtual_board, move_piece_in_virtual_board, init_game
+from game import is_check, display_virtual_board, get_virtual_board, move_piece_in_virtual_board
 import random
 from Move import Move
+
+def init_game():
+    board = [None]*64
+    board[0] = Piece("Rook", "black", 0)
+    board[7] = Piece("Rook", "black", 7)
+
+    board[1] = Piece("Knight", "black", 1)
+    board[6] = Piece("Knight", "black", 6)
+    
+    board[2] = Piece("Bishop", "black", 2)
+    board[5] = Piece("Bishop", "black", 5)
+
+    board[3] = Piece("Queen", "black", 3)
+    board[4] = Piece("King", "black", 4)
+
+    for i in range(8,16):
+        board[i] = Piece("Pawn", "black", i)
+
+    ### white pieces
+    board[56] = Piece("Rook", "white", 56)
+    board[63] = Piece("Rook", "white", 63)
+
+    board[57] = Piece("Knight", "white", 57)
+    board[62] = Piece("Knight", "white", 62)
+    
+    board[58] = Piece("Bishop", "white", 58)
+    board[61] = Piece("Bishop", "white", 61)
+
+    board[59] = Piece("Queen", "white", 59)
+    board[60] = Piece("King", "white", 60)
+
+    for i in range(48,56):
+        board[i] = Piece("Pawn", "white", i)
+
+    return board
+
+
 
 def get_color(is_selected):
     if is_selected == False: return None
@@ -158,6 +195,7 @@ def handle_click(piece: Piece, index: int, row, column):
 
 
 root = Tk()
+root.title("Chess Game")
 
 labels = []
 labels_initial_colors = []
