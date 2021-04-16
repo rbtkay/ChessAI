@@ -8,8 +8,8 @@ from Move import Move
 
 DOES_AI_MOVE = True
 IS_AI_SMART = True
-DOES_NEED_COEFICIENT = False
-AI_DEPTH = 6
+DOES_NEED_COEFICIENT = True
+AI_DEPTH = 4
 
 def init_game():
     board = [None]*64

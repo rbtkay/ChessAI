@@ -4,7 +4,7 @@ from game import is_king_dead
 import coefficient as coef
 
 
-def evaluate(board, does_need_coeficient):
+def evaluate(board, does_need_coeficient, king_death = 0):
     total_score = 0
     for i in board:
         if i is not None:
@@ -13,7 +13,7 @@ def evaluate(board, does_need_coeficient):
             else:
                 total_score += (i.value)
 
-    return total_score
+    return total_score - king_death
 
 
 def get_possible_moves(board, color):
@@ -39,6 +39,7 @@ def ai_move(board, is_smart: bool = False, depth: int = 1, does_need_coeficient:
     move = None
 
     if is_smart:
+        # move = smart_move(board)
         move, value = minmax(depth=depth, alpha=-999999, beta=999999, board=board, is_max=False, does_need_coeficient=does_need_coeficient)
     else:
         possible_moves = get_possible_moves(board, "black")
@@ -70,7 +71,7 @@ def smart_move(board):
         for i in move["moves"]:
             new_board = board.copy()
             v_board = move_on_virtual_board(board=new_board, origin=move["index"], destination=i)
-            score = evaluate(v_board)
+            score = evaluate(v_board, False)
 
             if(score < best_value):
                 best_value = score
@@ -81,8 +82,10 @@ def smart_move(board):
     return best_move
 
 
-
+count = 0 
 def minmax(depth, alpha, beta, board, is_max, does_need_coeficient):
+    global count
+
     if depth <= 0:
         return (None, evaluate(board, does_need_coeficient)) # int
 
@@ -90,16 +93,18 @@ def minmax(depth, alpha, beta, board, is_max, does_need_coeficient):
 
     possible_pieces_to_moves = get_possible_moves(board, color)
 
+    print(count)
+
     if is_max:
-        # print("max")
         best_value = -9999
         best_move = None
 
         if len(possible_pieces_to_moves) == 0:
-            return (None, -900)
+            return (None, evaluate(board, does_need_coeficient, 900))
 
         for piece in possible_pieces_to_moves:
             for i in piece["moves"]:
+                count += 1
                 new_board = board.copy()
                 v_board = move_on_virtual_board(board=new_board, origin=piece["index"], destination=i)
                 
@@ -122,10 +127,10 @@ def minmax(depth, alpha, beta, board, is_max, does_need_coeficient):
         best_move = None
 
         if len(possible_pieces_to_moves) == 0:
-            return (None, 900)
+            return (None, evaluate(board, does_need_coeficient, -900))
 
         for piece in possible_pieces_to_moves:
-            print(piece["moves"])
+            # print(piece["moves"])
             for i in piece["moves"]:
                 new_board = board.copy()
                 v_board = move_on_virtual_board(board=new_board, origin=piece["index"], destination=i)
@@ -143,14 +148,3 @@ def minmax(depth, alpha, beta, board, is_max, does_need_coeficient):
                     
         return (best_move, best_value)
         
-
-                
-
-        
-        
-
-
-
-
-
-# def mini

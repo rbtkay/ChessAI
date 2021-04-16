@@ -9,6 +9,10 @@ def is_check(playing_color: str, board):
     except:
         return True
 
+    # print(playing_color)
+    # print("king x", king_x)
+    # print("king y", king_y)
+
     danger_zones = [
                 [king_x+2, king_y+1],
                 [king_x+2, king_y-1],
@@ -22,11 +26,15 @@ def is_check(playing_color: str, board):
 
     for i in danger_zones:
         current_index = i[1] * 8 + i[0]
-        if 0 < current_index < 64: 
+        # print("current index")
+        # print(current_index)
+        # print("danger coordinates")
+        # print(i[0])
+        # print(i[1])
+        if 0 <= current_index < 64: 
             if board[current_index] is not None:
                 if board[current_index].color != playing_color and board[current_index].piece_type == "Knight":
                     return True
-                break
 
     # check for Bishop
     x_1 = king_x+1 
