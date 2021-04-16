@@ -85,41 +85,43 @@ class Piece:
             new_x = x
 
             new_index = new_y * 8 + new_x
-            if 0 < new_index < 64 and board[new_index] is None:
+            if 0 <= new_y < 8 and 0 <= new_x < 8 and board[new_index] is None:
                 legal_moves.append(new_index)
                 if not is_response:
                     v_board = move_on_virtual_board(board.copy(), self.current_index, new_index)
                     if is_check(playing_color=playing_color, board=v_board):
                         legal_moves.pop()
 
-            new_index = new_y *8 + (x+1)
-            if 0 < new_index < 64 and board[new_index] is not None and board[new_index].color != self.color:
+            new_x = x+1
+            new_index = new_y *8 + new_x
+            if 0 <= new_y < 8 and  0 <= new_x < 8 and board[new_index] is not None and board[new_index].color != self.color:
                 legal_moves.append(new_index)
                 if not is_response:
                     v_board = move_on_virtual_board(board.copy(), self.current_index, new_index)
                     if is_check(playing_color=playing_color, board=v_board):
                         legal_moves.pop()
 
+            new_x = x-1
             new_index = new_y *8 + (x-1)
-            if 0< new_index< 64 and board[new_index] is not None and board[new_index].color != self.color:
+            if 0 <= new_y < 8 and 0 <= new_x < 8 and board[new_index] is not None and board[new_index].color != self.color:
                 legal_moves.append(new_index)
                 if not is_response:
                     v_board = move_on_virtual_board(board.copy(), self.current_index, new_index)
                     if is_check(playing_color=playing_color, board=v_board):
                         legal_moves.pop()
 
-            if self.color == "black" and y == 1 and board[new_y * 8 + new_x] is None:
+            if self.color == "black" and y == 1 and board[new_y * 8 + x] is None:
                 new_y = y+2
-                new_index = new_y * 8 + new_x
+                new_index = new_y * 8 + x
                 if board[new_index] is None:
                     legal_moves.append(new_index)
                     if not is_response:
                         v_board = move_on_virtual_board(board.copy(), self.current_index, new_index)
                         if is_check(playing_color=playing_color, board=v_board):
                             legal_moves.pop()
-            elif self.color == "white" and y == 6 and board[new_y * 8 + new_x] is None:
+            elif self.color == "white" and y == 6 and board[new_y * 8 + x] is None:
                 new_y = y-2
-                new_index = new_y * 8 + new_x
+                new_index = new_y * 8 + x
                 if board[new_index] is None:
                     legal_moves.append(new_index)
                     if not is_response:
@@ -395,10 +397,10 @@ class Piece:
             new_index = y_1 * 8 + x_1
             if 0 <= new_index < 64 and (board[new_index] is None or board[new_index].color != playing_color):
                 legal_moves.append(new_index)
-                if not is_response:
-                    v_board = move_on_virtual_board(board.copy(), new_index, new_index)
-                    if is_check(playing_color=playing_color, board=v_board):
-                        legal_moves.pop()
+                # if not is_response:
+                #     v_board = move_on_virtual_board(board.copy(), self.current_index, new_index)
+                #     if is_check(playing_color=playing_color, board=v_board):
+                #         legal_moves.pop()
 
 
             x_2 = x 
@@ -406,73 +408,76 @@ class Piece:
             new_index = y_2 * 8 + x_2
             if 0 <= new_index < 64 and (board[new_index] is None or board[new_index].color != playing_color):
                 legal_moves.append(new_index)
-                if not is_response:
-                    v_board = move_on_virtual_board(board.copy(), new_index, new_index)
-                    if is_check(playing_color=playing_color, board=v_board):
-                        legal_moves.pop()
+                # if not is_response:
+                #     v_board = move_on_virtual_board(board.copy(), self.current_index, new_index)
+                #     if is_check(playing_color=playing_color, board=v_board):
+                #         legal_moves.pop()
 
             x_3 = x+1 
             y_3 = y
             new_index = y_3 * 8 + x_3
             if 0 <= new_index < 64 and (board[new_index] is None or board[new_index].color != playing_color):
                 legal_moves.append(new_index)
-                if not is_response:
-                    v_board = move_on_virtual_board(board.copy(), new_index, new_index)
-                    if is_check(playing_color=playing_color, board=v_board):
-                        legal_moves.pop()
+                # if not is_response:
+                #     v_board = move_on_virtual_board(board.copy(), self.current_index, new_index)
+                #     if is_check(playing_color=playing_color, board=v_board):
+                #         legal_moves.pop()
 
             x_4 = x-1 
             y_4 = y
             new_index = y_4 * 8 + x_4
             if 0 <= new_index < 64 and (board[new_index] is None or board[new_index].color != playing_color):
                 legal_moves.append(new_index)
-                if not is_response:
-                    v_board = move_on_virtual_board(board.copy(), new_index, new_index)
-                    if is_check(playing_color=playing_color, board=v_board):
-                        legal_moves.pop()
+                # if not is_response:
+                #     v_board = move_on_virtual_board(board.copy(), self.current_index, new_index)
+                #     if is_check(playing_color=playing_color, board=v_board):
+                #         legal_moves.pop()
 
             x_5 = x+1 
             y_5 = y+1
             new_index = y_5 * 8 + x_5
             if 0 <= new_index < 64 and (board[new_index] is None or board[new_index].color != playing_color):
                 legal_moves.append(new_index)
-                if not is_response:
-                    v_board = move_on_virtual_board(board.copy(), new_index, new_index)
-                    if is_check(playing_color=playing_color, board=v_board):
-                        legal_moves.pop()
+                # if not is_response:
+                #     v_board = move_on_virtual_board(board.copy(), self.current_index, new_index)
+                #     if is_check(playing_color=playing_color, board=v_board):
+                #         legal_moves.pop()
 
             x_6 = x-1 
             y_6 = y-1
             new_index = y_6 * 8 + x_6
             if 0 <= new_index < 64 and (board[new_index] is None or board[new_index].color != playing_color):
                 legal_moves.append(new_index)
-                if not is_response:
-                    v_board = move_on_virtual_board(board.copy(), new_index, new_index)
-                    if is_check(playing_color=playing_color, board=v_board):
-                        legal_moves.pop()
+                # if not is_response:
+                #     v_board = move_on_virtual_board(board.copy(), self.current_index, new_index)
+                #     if is_check(playing_color=playing_color, board=v_board):
+                #         legal_moves.pop()
 
             x_7 = x+1 
             y_7 = y-1
             new_index = y_7 * 8 + x_7
             if 0 <= new_index < 64 and (board[new_index] is None or board[new_index].color != playing_color):
                 legal_moves.append(new_index)
-                if not is_response:
-                    v_board = move_on_virtual_board(board.copy(), new_index, new_index)
-                    if is_check(playing_color=playing_color, board=v_board):
-                        legal_moves.pop()
+                # if not is_response:
+                #     v_board = move_on_virtual_board(board.copy(), self.current_index, new_index)
+                #     if is_check(playing_color=playing_color, board=v_board):
+                #         legal_moves.pop()
 
             x_8 = x-1 
             y_8 = y+1
             new_index = y_8 * 8 + x_8
             if 0 <= new_index < 64 and (board[new_index] is None or board[new_index].color != playing_color):
                 legal_moves.append(new_index)
-                if not is_response:
-                    v_board = move_on_virtual_board(board.copy(), new_index, new_index)
-                    if is_check(playing_color=playing_color, board=v_board):
-                        legal_moves.pop()
+                # if not is_response:
+                #     v_board = move_on_virtual_board(board.copy(), self.current_index, new_index)
+                #     if is_check(playing_color=playing_color, board=v_board):
+                #         legal_moves.pop()
 
-            if playing_color == "black":
-                print(legal_moves)
+            # if playing_color == "black" and self.piece_type == "King":
+            #     print("legal moves", legal_moves)
+
+            # if playing_color == "black":
+            #     print(legal_moves)
             
             # if self.current_index == KINGS[playing_color]["position"]:
             #     is_free = True

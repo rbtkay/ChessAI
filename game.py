@@ -1,22 +1,14 @@
 
 def is_check(playing_color: str, board):
-
-    # display_virtual_board(board=board)
-
-    # find black king 
     for i in board:
         if i is not None and i.color == playing_color and i.piece_type == "King":
             king = board.index(i)
+    try:
+        king_y = int(king / 8)
+        king_x = int(king - (king_y * 8))
+    except:
+        return True
 
-    king_y = int(king / 8)
-    king_x = int(king - (king_y * 8))
-
-    # print("x --- ", king_x)
-    # print("y --- ", king_y)
-
-    # check if king is in danger
-
-    # check for knight
     danger_zones = [
                 [king_x+2, king_y+1],
                 [king_x+2, king_y-1],
@@ -242,30 +234,13 @@ def is_check(playing_color: str, board):
     if board[new_index] is not None and board[new_index].color != playing_color and board[new_index].piece_type == "Pawn":
         return True
 
-
-    # print("in the check function")
-    # display_virtual_board(board)
-    
-    # print("playing color -- ", playing_color)
-    # king_index = get_king_index(playing_color, board)
-    
-    # opponent_moves = get_opponent_moves(playing_color=playing_color, board=board)
-    # print("opponent_moves")
-    # print(opponent_moves)
-
-
-
-    # print("in the check function")
-    # display_virtual_board(board)
-
-
-    # print(king_index)
-
-    # if king_index in opponent_moves:
-    #     print("check")
-    #     return True
     return False
 
+def is_king_dead(playing_color, board):
+    for i in board:
+        if i is not None and i.color != playing_color and i.piece_type == "King":
+            return False
+    return True
 
 def get_king_index(playing_color: str, board):
     for i in board:
@@ -306,7 +281,7 @@ def display_virtual_board(board):
             result += enter + "|"+ i.piece_type[0]
         else: result += enter + "| "
 
-    print(result + "\n\n")
+    # print(result + "\n\n")
 
 
 def move_piece_in_virtual_board(board, initial, destination):

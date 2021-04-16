@@ -6,6 +6,11 @@ from game import is_check, display_virtual_board, get_virtual_board, move_piece_
 import random
 from Move import Move
 
+DOES_AI_MOVE = True
+IS_AI_SMART = True
+DOES_NEED_COEFICIENT = False
+AI_DEPTH = 6
+
 def init_game():
     board = [None]*64
     board[0] = Piece("Rook", "black", 0)
@@ -42,10 +47,10 @@ def init_game():
     return board
 
 
-
 def get_color(is_selected):
     if is_selected == False: return None
     else: return 'yellow'
+
 
 def change_turn():
     global playing_color    # row = int(move_chosen / 8)
@@ -55,48 +60,16 @@ def change_turn():
 
     playing_color = "black" if playing_color == "white" else "white"
 
-    if playing_color == "black": 
-        # AI_possible_moves = get_possible_moves(board)
+    if playing_color == "black" and DOES_AI_MOVE: 
+        move = ai_move(board.copy(), IS_AI_SMART, AI_DEPTH, does_need_coeficient=DOES_NEED_COEFICIENT)
+        if move is None:
+            print("check mate")
+        else:
+            current_selected = move.origin
+            row = int(move.destination / 8)
+            column = move.destination - int(row * 8)
+            move_piece(destination_index=move.destination, row=(row+1), column=column)
 
-        # # ai chooses a move
-        # piece_chosen = random.randrange(0, len(AI_possible_moves))
-        # move_chosen_index = random.randrange(0, len(AI_possible_moves[piece_chosen]["moves"]))
-
-        # current_selected = AI_possible_moves[piece_chosen]["index"]
-        # move_chosen = AI_possible_moves[piece_chosen]["moves"][move_chosen_index]
-
-        # move = ai_move(board)
-        # v_board = move_on_virtual_board(board=board.copy(), origin=move.origin, destination=move.destination)
-        # display_virtual_board(v_board)
-
-        move = ai_move(board.copy(), True)
-
-        # display_virtual_board(board)
-        
-        current_selected = move.origin
-        row = int(move.destination / 8)
-        column = move.destination - int(row * 8)
-        move_piece(destination_index=move.destination, row=(row+1), column=column)
-
-        
-        # ai tries its different moves
-        # minimum = 999999
-        # optimal_move = {}
-        # for move in AI_possible_moves:
-        #     selected = move["index"]
-        #     for i in move["moves"]:
-        #         print(selected)
-        #         print(i)
-        #         v_board = board.copy()
-        #         move_piece_in_virtual_board(v_board, selected, i)
-        #         display_virtual_board(v_board)
-        #         evaluation = evaluate(v_board)
-        #         if evaluation < minimum:
-        #             minimum = evaluation
-        #             optimal_move["initial"] = selected
-        #             optimal_move["destination"] = i
-
-        # print(optimal_move)     
 
 def display_board(board):
     global pieces_on_board
@@ -130,23 +103,26 @@ def display_board(board):
 
 
 def move_piece(destination_index, row, column):
-    # enemy get eaten if we pass over it
-    if pieces_on_board[destination_index] is not None: 
-        pieces_on_board[destination_index].grid_forget()
-
     # virtula board
     board[destination_index] = board[current_selected]
     board[destination_index].set_index(destination_index)
     board[current_selected] = None
+    
+    move_piece_on_board(destination_index=destination_index, row=row, column=column)
 
+    change_turn()
+
+def move_piece_on_board(destination_index, row, column):
+    # enemy get eaten if we pass over it
+    if pieces_on_board[destination_index] is not None: 
+        pieces_on_board[destination_index].grid_forget()
+    
     # ui board
     btn = Button(root, image=board[destination_index].image, command=partial(handle_click,  piece=board[destination_index], index=destination_index, row=row, column=column))
     btn.grid(row=row, column=column)
     pieces_on_board[destination_index] = btn
     pieces_on_board[current_selected].grid_forget()
 
-    # display_virtual_board(board)
-    change_turn()
 
 def handle_label_click(event, row, column):
     destination_index = (row-1) * 8 + column
@@ -194,6 +170,7 @@ def handle_click(piece: Piece, index: int, row, column):
             possible_moves.append(i)
 
 
+
 root = Tk()
 root.title("Chess Game")
 
@@ -207,73 +184,5 @@ playing_color = "white"
 board = init_game()
 
 display_board(board)
-# display_virtual_board(board)
 
 root.mainloop()
-
-
-# [
-# <tkinter.Button object .!button>,
-# <tkinter.Button object .!button2>
-#   <tkinter.Button object .!button3>
-#   <tkinter.Button object .!button4>
-#   <tkinter.Button object .!button5>
-#   <tkinter.Button object .!button6>
-#   <tkinter.Button object .!button7>
-#   <tkinter.Button object .!button8>
-#   <tkinter.Button object .!button9>
-#   <tkinter.Button object .!button10>
-#   <tkinter.Button object .!button11>
-#   <tkinter.Button object .!button12>
-#   <tkinter.Button object .!button13>
-#   <tkinter.Button object .!button14>
-#   <tkinter.Button object .!button15>
-#   <tkinter.Button object .!button16>
-#   None
-#   None
-#   None
-#   None
-#   None
-#   None
-#   None
-#   None
-#   None
-#   None
-#   None
-#   None
-#   None
-#   None
-#   None
-#   None
-#   None
-#   None
-#   None
-#   None
-#   None
-#   None
-#   None
-#   None
-#   None
-#   None
-#   None
-#   None
-#   None
-#   None
-#   None
-#   None
-#   <tkinter.Button object .!button17>
-#   <tkinter.Button object .!button18>
-#   <tkinter.Button object .!button19>
-#   <tkinter.Button object .!button20>
-#   <tkinter.Button object .!button21>
-#   <tkinter.Button object .!button22>
-#   <tkinter.Button object .!button23>
-#   <tkinter.Button object .!button24>
-#   <tkinter.Button object .!button25>
-#   <tkinter.Button object .!button26>
-#   <tkinter.Button object .!button27>
-#   <tkinter.Button object .!button28>
-#   <tkinter.Button object .!button29>
-#   <tkinter.Button object .!button30>
-#   <tkinter.Button object .!button31>
-#   <tkinter.Button object .!button32>]
